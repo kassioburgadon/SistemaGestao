@@ -5,15 +5,13 @@ namespace SistemaGestao.Models
     public class Tarefa
     {
         private string titulo;
-        private string descricao;
-        private DateTime dataVencimento;
         private Status status;
 
         [JsonIgnore]
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Titulo { get => titulo; set => titulo = value; }
-        public string Descricao { get => descricao; set => descricao = value; }
-        public DateTime DataVencimento { get => dataVencimento; set => dataVencimento = value; }
+        public string? Descricao { get; set; }
+        public DateTime? DataVencimento { get; set; }
         public Status Status { get => status; set => status = value; }
     }
 

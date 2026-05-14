@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaGestao.Data;
+using SistemaGestao.Dtos;
 using SistemaGestao.Models;
 
 namespace SistemaGestao.Controllers
@@ -84,12 +85,21 @@ namespace SistemaGestao.Controllers
         // POST: api/Tarefas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tarefa>> PostTarefa(Tarefa tarefa)
+        public async Task<ActionResult<Tarefa>> PostTarefa(TarefaCreateDto dto)
         {
           if (_context.Tarefa == null)
           {
               return Problem("Entity set 'SistemaGestaoContext.Tarefa'  is null.");
           }
+
+            var tarefa = new Tarefa
+            {
+                Id = Guid.NewGuid(),
+                Titulo = dto.Titulo,
+                Descricao = dto.Descricao,
+                DataVencimento = dto.DataVencimento ?? DateTime.MinValue,
+                Status = dto.Status
+            };
             _context.Tarefa.Add(tarefa);
             await _context.SaveChangesAsync();
 
