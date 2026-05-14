@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SistemaGestao;
 using SistemaGestao.Data;
 
 namespace SistemaGestao.Controllers
 {
-    public class TarefasController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class TarefasController : ControllerBase
     {
         private readonly SistemaGestaoContext _context;
 
@@ -19,146 +21,104 @@ namespace SistemaGestao.Controllers
             _context = context;
         }
 
-        // GET: Tarefas
-        public async Task<IActionResult> Index()
+        // GET: api/Tarefas
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Tarefa>>> GetTarefa()
         {
-              return _context.Tarefa != null ? 
-                          View(await _context.Tarefa.ToListAsync()) :
-                          Problem("Entity set 'SistemaGestaoContext.Tarefa'  is null.");
+          if (_context.Tarefa == null)
+          {
+              return NotFound();
+          }
+            return await _context.Tarefa.ToListAsync();
         }
 
-        // GET: Tarefas/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        // GET: api/Tarefas/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Tarefa>> GetTarefa(Guid id)
         {
-            if (id == null || _context.Tarefa == null)
-            {
-                return NotFound();
-            }
-
-            var tarefa = await _context.Tarefa
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tarefa == null)
-            {
-                return NotFound();
-            }
-
-            return View(tarefa);
-        }
-
-        // GET: Tarefas/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Tarefas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Titulo,Descricao,DataVencimento,Status")] Tarefa tarefa)
-        {
-            if (ModelState.IsValid)
-            {
-                tarefa.Id = Guid.NewGuid();
-                _context.Add(tarefa);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tarefa);
-        }
-
-        // GET: Tarefas/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
-        {
-            if (id == null || _context.Tarefa == null)
-            {
-                return NotFound();
-            }
-
+          if (_context.Tarefa == null)
+          {
+              return NotFound();
+          }
             var tarefa = await _context.Tarefa.FindAsync(id);
+
             if (tarefa == null)
             {
                 return NotFound();
             }
-            return View(tarefa);
+
+            return tarefa;
         }
 
-        // POST: Tarefas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Titulo,Descricao,DataVencimento,Status")] Tarefa tarefa)
+        // PUT: api/Tarefas/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTarefa(Guid id, Tarefa tarefa)
         {
             if (id != tarefa.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(tarefa).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(tarefa);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TarefaExists(tarefa.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            return View(tarefa);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TarefaExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: Tarefas/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        // POST: api/Tarefas
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Tarefa>> PostTarefa(Tarefa tarefa)
         {
-            if (id == null || _context.Tarefa == null)
+          if (_context.Tarefa == null)
+          {
+              return Problem("Entity set 'SistemaGestaoContext.Tarefa'  is null.");
+          }
+            _context.Tarefa.Add(tarefa);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetTarefa", new { id = tarefa.Id }, tarefa);
+        }
+
+        // DELETE: api/Tarefas/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTarefa(Guid id)
+        {
+            if (_context.Tarefa == null)
             {
                 return NotFound();
             }
-
-            var tarefa = await _context.Tarefa
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var tarefa = await _context.Tarefa.FindAsync(id);
             if (tarefa == null)
             {
                 return NotFound();
             }
 
-            return View(tarefa);
-        }
-
-        // POST: Tarefas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            if (_context.Tarefa == null)
-            {
-                return Problem("Entity set 'SistemaGestaoContext.Tarefa'  is null.");
-            }
-            var tarefa = await _context.Tarefa.FindAsync(id);
-            if (tarefa != null)
-            {
-                _context.Tarefa.Remove(tarefa);
-            }
-            
+            _context.Tarefa.Remove(tarefa);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool TarefaExists(Guid id)
         {
-          return (_context.Tarefa?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Tarefa?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
