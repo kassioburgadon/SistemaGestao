@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SistemaGestao
+namespace SistemaGestao.Models
 {
     public class Tarefa
     {
