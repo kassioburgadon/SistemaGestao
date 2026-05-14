@@ -1,4 +1,6 @@
-﻿namespace SistemaGestao
+﻿using System.Text.Json.Serialization;
+
+namespace SistemaGestao
 {
     public class Tarefa
     {
@@ -7,6 +9,7 @@
         private DateTime dataVencimento;
         private Status status;
 
+        [JsonIgnore]
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Titulo { get => titulo; set => titulo = value; }
         public string Descricao { get => descricao; set => descricao = value; }
