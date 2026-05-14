@@ -103,7 +103,7 @@ namespace SistemaGestao.Controllers
             _context.Tarefa.Add(tarefa);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTarefa", new { id = tarefa.Id }, tarefa);
+            return CreatedAtAction("GetTarefa", new { id = tarefa.Id }, tarefa.Id);
         }
 
         // DELETE: api/Tarefas/5

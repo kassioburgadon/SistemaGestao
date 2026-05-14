@@ -12,7 +12,7 @@ namespace SistemaGestao.Models
         public string Titulo { get => titulo; set => titulo = value; }
         public string? Descricao { get; set; }
         public DateTime? DataVencimento { get; set; }
-        public Status Status { get => status; set => status = value; }
+        public Status? Status { get; set; }
     }
 
     public enum Status
