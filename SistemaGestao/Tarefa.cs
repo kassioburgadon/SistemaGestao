@@ -7,6 +7,7 @@
         private DateTime dataVencimento;
         private Status status;
 
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Titulo { get => titulo; set => titulo = value; }
         public string Descricao { get => descricao; set => descricao = value; }
         public DateTime DataVencimento { get => dataVencimento; set => dataVencimento = value; }
