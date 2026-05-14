@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SistemaGestao;
 using SistemaGestao.Data;
+using SistemaGestao.Models;
 
 namespace SistemaGestao.Controllers
 {
