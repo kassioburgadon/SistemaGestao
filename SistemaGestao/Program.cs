@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using SistemaGestao.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<SistemaGestaoContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SistemaGestaoContext") ?? throw new InvalidOperationException("Connection string 'SistemaGestaoContext' not found.")));
 
 // Add services to the container.
 
