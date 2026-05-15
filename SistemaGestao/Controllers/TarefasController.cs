@@ -150,7 +150,7 @@ namespace SistemaGestao.Controllers
             _context.Tarefa.Remove(tarefa);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new { Mensagem = "Tarefa deletado com sucesso", Id = id });
         }
 
         private bool TarefaExists(Guid id)
