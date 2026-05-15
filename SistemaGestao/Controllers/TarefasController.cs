@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaGestao.Data;
 using SistemaGestao.Dtos;
 using SistemaGestao.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SistemaGestao.Controllers
 {
@@ -37,27 +38,40 @@ namespace SistemaGestao.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(TarefaReadDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Tarefa>> GetTarefa(Guid id)
+
+        public async Task<ActionResult<IEnumerable<TarefaReadDto>>> GetTarefas(
+        [FromQuery] Status? status,
+        [FromQuery] DateTime? dataVencimento)
         {
+
             if (_context.Tarefa == null)
             {
                 return NotFound();
             }
-            var tarefa = await _context.Tarefa.FindAsync(id);
+            var tarefa = _context.Tarefa.AsQueryable();
 
             if (tarefa == null)
             {
                 return NotFound();
             }
 
-            var dto = new TarefaReadDto
-            {
-                Id = tarefa.Id,
-                Titulo = tarefa.Titulo,
-                Descricao = tarefa.Descricao,
-                DataVencimento = tarefa.DataVencimento,
-                Status = tarefa.Status
-            };
+            if (status != null)
+                tarefa = tarefa.Where(t => t.Status == status.Value);
+
+            if (dataVencimento != null)
+                tarefa = tarefa.Where(t => t.DataVencimento.Value.Date == dataVencimento.Value.Date);
+
+            var dto = await tarefa
+                .Select(t => new TarefaReadDto
+                {
+                    Id = t.Id,
+                    Titulo = t.Titulo,
+                    Descricao = t.Descricao,
+                    DataVencimento = t.DataVencimento,
+                    Status = t.Status
+                })
+                .ToListAsync();
+
 
 
             return Ok(dto);
