@@ -7,7 +7,6 @@ namespace SistemaGestao.Models
         private string titulo;
         private Status status;
 
-        [JsonIgnore]
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Titulo { get => titulo; set => titulo = value; }
         public string? Descricao { get; set; }
