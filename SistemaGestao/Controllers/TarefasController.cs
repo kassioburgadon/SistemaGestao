@@ -26,10 +26,10 @@ namespace SistemaGestao.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tarefa>>> GetTarefa()
         {
-          if (_context.Tarefa == null)
-          {
-              return NotFound();
-          }
+            if (_context.Tarefa == null)
+            {
+                return NotFound();
+            }
             return await _context.Tarefa.ToListAsync();
         }
 
@@ -37,10 +37,10 @@ namespace SistemaGestao.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Tarefa>> GetTarefa(Guid id)
         {
-          if (_context.Tarefa == null)
-          {
-              return NotFound();
-          }
+            if (_context.Tarefa == null)
+            {
+                return NotFound();
+            }
             var tarefa = await _context.Tarefa.FindAsync(id);
 
             if (tarefa == null)
@@ -54,14 +54,20 @@ namespace SistemaGestao.Controllers
         // PUT: api/Tarefas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTarefa(Guid id, Tarefa tarefa)
+        public async Task<IActionResult> PutTarefa(Guid id, TarefaUpdateDto dto)
         {
-            if (id != tarefa.Id)
-            {
-                return BadRequest();
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            _context.Entry(tarefa).State = EntityState.Modified;
+            var tarefa = await _context.Tarefa.FindAsync(id);
+            if (tarefa == null)
+                return NotFound();
+
+            tarefa.Titulo = dto.Titulo;
+            tarefa.Descricao = dto.Descricao;
+            tarefa.DataVencimento = dto.DataVencimento;
+            tarefa.Status = dto.Status.Value;
+
 
             try
             {
@@ -79,7 +85,8 @@ namespace SistemaGestao.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(tarefa);
+
         }
 
         // POST: api/Tarefas
@@ -87,10 +94,10 @@ namespace SistemaGestao.Controllers
         [HttpPost]
         public async Task<ActionResult<Tarefa>> PostTarefa(TarefaCreateDto dto)
         {
-          if (_context.Tarefa == null)
-          {
-              return Problem("Entity set 'SistemaGestaoContext.Tarefa'  is null.");
-          }
+            if (_context.Tarefa == null)
+            {
+                return Problem("Entity set 'SistemaGestaoContext.Tarefa'  is null.");
+            }
 
             var tarefa = new Tarefa
             {
