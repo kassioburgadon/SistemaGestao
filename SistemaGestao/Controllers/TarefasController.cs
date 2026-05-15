@@ -48,7 +48,17 @@ namespace SistemaGestao.Controllers
                 return NotFound();
             }
 
-            return tarefa;
+            var dto = new TarefaReadDto
+            {
+                Id = tarefa.Id,
+                Titulo = tarefa.Titulo,
+                Descricao = tarefa.Descricao,
+                DataVencimento = tarefa.DataVencimento,
+                Status = tarefa.Status
+            };
+
+
+            return Ok(dto);
         }
 
         // PUT: api/Tarefas/5
