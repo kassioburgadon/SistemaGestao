@@ -5,6 +5,7 @@ using SistemaGestao.Data;
 using SistemaGestao.Dtos;
 using SistemaGestao.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,6 +41,7 @@ namespace SistemaGestao.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
         public async Task<ActionResult<IEnumerable<TarefaReadDto>>> GetTarefas(
+        Guid? id,
         [FromQuery] Status? status,
         [FromQuery] DateTime? dataVencimento)
         {
@@ -62,6 +64,7 @@ namespace SistemaGestao.Controllers
                 tarefa = tarefa.Where(t => t.DataVencimento.Value.Date == dataVencimento.Value.Date);
 
             var dto = await tarefa
+                 .Where(t => t.Id == id)
                 .Select(t => new TarefaReadDto
                 {
                     Id = t.Id,
@@ -72,6 +75,8 @@ namespace SistemaGestao.Controllers
                 })
                 .ToListAsync();
 
+            if (dto == null || !dto.Any())
+                return NotFound(); // lista vazia
 
 
             return Ok(dto);
@@ -146,7 +151,7 @@ namespace SistemaGestao.Controllers
 
         // DELETE: api/Tarefas/5
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
         public async Task<IActionResult> DeleteTarefa(Guid id)
