@@ -33,14 +33,14 @@ https://localhost:7089/swagger/v1/swagger.json
 
 ## 🛠️ Como executar
 1. Clone o repositório:
-   git clone https://github.com/kassioburgadon/SistemaGestao.git
-   cd SistemaGestao\SistemaGestao
-   dotnet run
+2. git clone https://github.com/kassioburgadon/SistemaGestao.git
+3. cd SistemaGestao\SistemaGestao
+4. dotnet run
 
 ✅ Testes
-cd SistemaGestao\SistemaGestao.Test
-dotnet teste
-Os testes de integração utilizam HttpClient para validar os endpoints. Exemplos:
+1. cd SistemaGestao\SistemaGestao.Test
+2. dotnet teste
+3. Os testes de integração utilizam HttpClient para validar os endpoints. Exemplos:
 - PostTarefa_DeveRetornarCreated
 - PutTarefa_DeveRetornarNoContent
 - DeleteTarefa_DeveRetornarNoContent
