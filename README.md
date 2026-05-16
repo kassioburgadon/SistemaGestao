@@ -39,7 +39,7 @@ https://localhost:7089/swagger/v1/swagger.json
 
 ✅ Testes
 1. cd SistemaGestao\SistemaGestao.Test
-2. dotnet teste
+2. dotnet test
 3. Os testes de integração utilizam HttpClient para validar os endpoints. Exemplos:
 - PostTarefa_DeveRetornarCreated
 - PutTarefa_DeveRetornarNoContent
