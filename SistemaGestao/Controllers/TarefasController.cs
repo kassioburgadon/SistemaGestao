@@ -24,7 +24,10 @@ namespace SistemaGestao.Controllers
             _context = context;
         }
 
-        // GET: api/Tarefas
+        /// <summary>
+        /// Obtém todas as tarefas cadastradas no sistema
+        /// </summary>
+        /// <returns>Retorna uma lista de tarefas.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tarefa>>> GetTarefa()
         {
@@ -35,11 +38,16 @@ namespace SistemaGestao.Controllers
             return await _context.Tarefa.ToListAsync();
         }
 
-        // GET: api/Tarefas/5
+        /// <summary>
+        /// Obtém uma tarefa específica ou lista filtrada.
+        /// </summary>
+        /// <param name="id">Id da tarefa</param>
+        /// <param name="status">Filtro por status.</param>
+        /// <param name="dataVencimento">Filtro por data de vencimento.</param>
+        /// <returns>Retorna uma tarefa ou lista de tarefas</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(TarefaReadDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-
         public async Task<ActionResult<IEnumerable<TarefaReadDto>>> GetTarefas(
         Guid? id,
         [FromQuery] Status? status,
@@ -82,8 +90,15 @@ namespace SistemaGestao.Controllers
             return Ok(dto);
         }
 
-        // PUT: api/Tarefas/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Atualiza uma tarefa existente no sistema.
+        /// </summary>
+        /// <param name="id">Id da tarefa que será atualizada.</param>
+        /// <param name="dto">Objeto contendo os novos dados da tarefa.</param>
+        /// <returns>
+        /// Retorna a tarefa atualizada em caso de sucesso (200 OK).  
+        /// Retorna erro de validação se os dados forem inválidos (400 Bad Request).  
+        /// </returns>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(TarefaUpdateDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -122,8 +137,15 @@ namespace SistemaGestao.Controllers
 
         }
 
-        // POST: api/Tarefas
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Cria uma nova tarefa no sistema.
+        /// </summary>
+        /// <param name="dto">Objeto contendo os dados necessários para criar a tarefa.</param>
+        /// <returns>
+        /// Retorna a tarefa criada em caso de sucesso (201 Created).  
+        /// Retorna erro de validação se os dados forem inválidos (400 Bad Request).  
+        /// Retorna Erro se o contexto de tarefas estiver indisponível.
+        /// </returns>
         [HttpPost]
         [ProducesResponseType(typeof(TarefaReadDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -149,7 +171,14 @@ namespace SistemaGestao.Controllers
             return CreatedAtAction("GetTarefa", new { id = tarefa.Id }, tarefa.Id);
         }
 
-        // DELETE: api/Tarefas/5
+        /// <summary>
+        /// Exclui uma tarefa existente do sistema.
+        /// </summary>
+        /// <param name="id">Id da tarefa que será excluída.</param>
+        /// <returns>
+        /// Retorna uma mensagem de confirmação e o Id da tarefa excluída em caso de sucesso (200 OK).  
+        /// Retorna NotFound se a tarefa não existir ou se o contexto estiver indisponível (404 Not Found).
+        /// </returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
